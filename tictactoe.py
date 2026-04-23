@@ -1,31 +1,40 @@
-import random
+import pygame, sys
+pygame.init()
 
-options = ("rock", "paper", "scissors")
-running = True
+screen = pygame.display.set_mode((600, 600))
+board = [[None]*3 for _ in range(3)]
+turn = 'X'
 
-while running:
-    player = None
-    computer = random.choice(options)
+while True:
+    screen.fill((220,220,220))
 
-    while player not in options:
-        player = input("Enter a choice (rock, paper, scissors): ").lower()
+  
+    pygame.draw.line(screen,(0,0,0),(200,0),(200,600),5)
+    pygame.draw.line(screen,(0,0,0),(400,0),(400,600),5)
+    pygame.draw.line(screen,(0,0,0),(0,200),(600,200),5)
+    pygame.draw.line(screen,(0,0,0),(0,400),(600,400),5)
 
-    print(f"Player: {player}")
-    print(f"Computer: {computer}")
+    
+    for i in range(3):
+        for j in range(3):
+            x, y = j*200+100, i*200+100
+            if board[i][j] == 'X':
+                pygame.draw.line(screen,(255,0,0),(x-50,y-50),(x+50,y+50),5)
+                pygame.draw.line(screen,(255,0,0),(x+50,y-50),(x-50,y+50),5)
+            elif board[i][j] == 'O':
+                pygame.draw.circle(screen,(0,0,255),(x,y),60,5)
 
-    if player == computer:
-        print("It's a tie!")
-    elif player == "rock" and computer == "scissors":
-        print("You win!")
-    elif player == "paper" and computer == "rock":
-        print("You win!")
-    elif player == "scissors" and computer == "paper":
-        print("You win!")
-    else:
-        print("You lose!")
+    pygame.display.update()
 
-    play_again = input("Play again? (y/n): ").lower()
-    if play_again != "y":
-        running = False
+    for e in pygame.event.get():
+        if e.type == pygame.QUIT:
+            pygame.quit()
+            sys.exit()
 
-print("Thanks for playing!")
+        if e.type == pygame.MOUSEBUTTONDOWN:
+            mx, my = pygame.mouse.get_pos()
+            r, c = my//200, mx//200
+
+            if board[r][c] is None:
+                board[r][c] = turn
+                turn = 'O' if turn == 'X' else 'X'
